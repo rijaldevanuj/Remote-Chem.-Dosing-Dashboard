@@ -1,3 +1,43 @@
+# Flow State & Level Dashboard
+
+A modern, responsive dashboard for monitoring flow states and tank levels with real-time updates and alerts.
+
+## Features
+
+- Real-time monitoring of tank levels and flow rates
+- Interactive charts and metrics
+- Mobile-responsive design
+- Alert system with acknowledgment
+- Comprehensive reporting system
+- Quick action controls
+
+## Technologies Used
+
+- React
+- Tailwind CSS
+- Recharts
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/YOUR_USERNAME/flow-state-dashboard.git
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
+## Screenshots
+
+[Add screenshots of your dashboard here]
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
