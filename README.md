@@ -4,33 +4,22 @@ A modern, responsive dashboard for monitoring flow states and tank levels with r
 
 ## Features
 
-- Real-time monitoring of tank levels and flow rates
-- Interactive charts and metrics
+- Real-time monitoring
+- Interactive charts
 - Mobile-responsive design
-- Alert system with acknowledgment
-- Comprehensive reporting system
-- Quick action controls
+- Alert system
+- Comprehensive reporting
 
-## Technologies Used
+## Tech Stack
 
 - React
 - Tailwind CSS
 - Recharts
 
-## Getting Started
+## Setup
 
-1. Clone the repository:
-```bash
-git clone https://github.com/YOUR_USERNAME/flow-state-dashboard.git
-```
-
-2. Install dependencies:
 ```bash
 npm install
-```
-
-3. Start the development server:
-```bash
 npm start
 ```
 
@@ -97,6 +86,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 ### Advanced Configuration
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
