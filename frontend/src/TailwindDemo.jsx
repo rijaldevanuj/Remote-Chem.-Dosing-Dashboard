@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   LineChart,
   Line,
@@ -8,14 +8,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { Link } from "react-router-dom";
 
-export default function Dashboard() {
+export default function TailwindDemo() {
   const [currentTime, setCurrentTime] = useState(
     new Date().toLocaleTimeString()
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [apiKeys, setApiKeys] = useState({});
   const alertsSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
+  const [flowData, setFlowData] = useState([]);
+  const [volumeData, setVolumeData] = useState([]);
+  const [reportMetrics, setReportMetrics] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,80 +30,78 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+ useEffect(() => {
+  const fetchApiKeys = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/latest");
+      const data = await response.json(); // ✅ FIXED HERE
+
+      if (data) {
+        setApiKeys(data); // keep this if used elsewhere
+
+        // ✅ Update chart data states from API
+        if (data.flow) setFlowData(data.flow);
+        if (data.volume) setVolumeData(data.volume);
+        if (data.report) setReportMetrics(data.report);
+      }
+
+      console.log("Fetched API keys:", data);
+    } catch (error) {
+      console.error("Error fetching API keys:", error);
+    }
+  };
+
+  fetchApiKeys(); // initial fetch
+  const interval = setInterval(fetchApiKeys, 1000); // fetch every second
+
+  return () => clearInterval(interval); // cleanup on unmount
+}, []);
+
+  // Toggle mobile menu
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prev) => !prev);
   };
-
-  const scrollToAlerts = () => {
-    alertsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToHero = () => {
-    heroSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const flowData = [
-    { time: "10:00", value: 7.0 },
-    { time: "10:10", value: 7.5 },
-    { time: "10:20", value: 8.0 },
-    { time: "10:30", value: 8.3 },
-    { time: "10:40", value: 8.5 },
-    { time: "10:50", value: 8.8 },
-    { time: "11:00", value: 9.0 },
-  ];
-
-  const volumeData = [
-    { time: "10:00", value: 75 },
-    { time: "10:10", value: 90 },
-    { time: "10:20", value: 100 },
-    { time: "10:30", value: 115 },
-    { time: "10:40", value: 125 },
-    { time: "10:50", value: 130 },
-  ];
-
-  // Add new data for reports
-  const reportMetrics = [
-    { title: "Total Flow Volume", value: "2,547.3 L", change: "+12.5%" },
-    { title: "Average Flow Rate", value: "8.2 L/min", change: "-2.1%" },
-    { title: "Chemical Usage", value: "156.8 mL", change: "+5.3%" },
-    { title: "System Uptime", value: "99.7%", change: "+0.2%" },
-  ];
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#0d0f1c] text-white">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-[#082032]">
-        <div className="text-xl font-bold">Dashboard</div>
-        <button onClick={toggleMobileMenu} className="text-2xl">
-          {isMobileMenuOpen ? "×" : "☰"}
+      <div className="flex justify-between items-center p-4 bg-[#112240] rounded-b-lg md:hidden">
+        <div className="text-lg font-bold">Dashboard</div>
+        <button
+          onClick={toggleMobileMenu}
+          className="text-gray-400 hover:text-white"
+        >
+          {isMobileMenuOpen ? "✖" : "☰"}
         </button>
       </div>
 
-      {/* Sidebar */}
-      <aside
-        className={`
-        ${isMobileMenuOpen ? "flex" : "hidden"} 
-        md:flex flex-col w-full md:w-60 bg-[#082032] p-6 space-y-8 
-        md:sticky md:top-0 md:h-screen
-        absolute top-16 z-50
-      `}
-      >
-        <div className="text-xl font-bold">Dashboard</div>
-        <nav className="space-y-4">
-          <div
-            onClick={scrollToHero}
-            className="hover:bg-white/10 hover:border hover:border-white/30 py-2 px-3 rounded-lg cursor-pointer transition-all"
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex md:flex-col md:w-64 bg-[#112240] p-4 rounded-r-lg sidebar sticky top-0 h-screen">
+        <div className="flex items-center gap-2 mb-6">
+          {/*
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <span className="text-white text-xl font-bold">D</span>
+          </div> 
+          */}
+          <h2 className="text-xl font-bold text-white">Dashboard</h2>
+        </div>
+
+        <nav className="flex flex-col gap-4">
+          <Link
+            to="/"
+            className="px-4 py-2 rounded hover:bg-[#88bae03d] transition-colors"
           >
-            Analytics
-          </div>
-          <div
-            onClick={scrollToAlerts}
-            className="hover:bg-white/10 hover:border hover:border-white/30 py-2 px-3 rounded-lg cursor-pointer transition-all"
+            Home
+          </Link>
+          <Link
+            to="/about"
+            className="px-4 py-2 rounded hover:bg-[#88bae03d] transition-colors"
           >
-            Reports
-          </div>
+            About
+          </Link>
+          {/* Add more links as needed */}
         </nav>
-      </aside>
+      </div>
 
       <main className="flex-1 p-4 md:p-6 overflow-y-auto">
         {/* Time Display */}
@@ -157,7 +160,7 @@ export default function Dashboard() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
-                  72%
+                  {apiKeys.TankLevel_cm|| 0.0}
                   <br />
                   <br />
                   <span className="text-xs font-normal">Capacity</span>
@@ -178,10 +181,10 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="text-4xl font-bold">
-              8.5 <span className="text-sm">L/min</span>
+              {apiKeys.FlowRate_L_per_min || 0} <span className="text-sm">L/min</span>
             </div>
             <div className="text-sm text-yellow-300">
-              +1.2 L/min from average
+              {apiKeys.FlowRate_L_per_min || 0}
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart
@@ -207,7 +210,8 @@ export default function Dashboard() {
           <div className="bg-[#112240] p-6 rounded-xl shadow-md h-[400px]">
             <div className="font-semibold text-blue-300 mb-2">Dosing Volume</div>
             <div className="text-4xl font-bold">
-              125 <span className="text-sm">mL</span>
+              {apiKeys.TotalVolume_L || 0}
+              <span className="text-sm">mL</span>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart
@@ -403,10 +407,18 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Logs Section */}
+        {/* <div className="mt-8 bg-[#112240] p-6 rounded-xl shadow-md">
+          <h2 className
+="text-lg font-semibold mb-4">Logs</h2>
+          {/* Logs content will be rendered here if needed */}
+        {/* </div> */}
       </main>
     </div>
   );
 }
+
 
 
 
