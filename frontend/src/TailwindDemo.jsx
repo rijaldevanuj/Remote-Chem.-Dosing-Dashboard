@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Droplet, TrendingUp, TrendingDown } from "lucide-react";
+import { Syringe, AlertCircle } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -62,6 +64,13 @@ export default function TailwindDemo() {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  //Calculate flow rate and threshold 
+  // Assuming apiKeys.FlowRate_L_per_min is a string that can be parsed to a float
+  // and apiKeys.TankLevel_cm is a string that can be parsed to an integer
+  // Adjust the parsing logic based on your actual API response structure
+  const flowRate = parseFloat(apiKeys.FlowRate_L_per_min) || 0;
+  const threshold = 50;
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#0d0f1c] text-white">
       {/* Mobile Header */}
@@ -76,6 +85,7 @@ export default function TailwindDemo() {
       </div>
 
       {/* Desktop Sidebar */}
+                  
       <div className="hidden md:flex md:flex-col md:w-64 bg-[#112240] p-4 rounded-r-lg sidebar sticky top-0 h-screen">
         <div className="flex items-center gap-2 mb-6">
           {/*
@@ -101,12 +111,20 @@ export default function TailwindDemo() {
           </Link>
           {/* Add more links as needed */}
         </nav>
+            {/* Bottom Button */}
+    <div className="mt-auto pt-6">
+      <button className="w-full px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition duration-200 font-semibold">
+        Launch
+  
+      </button>
       </div>
+      
+      </div> 
 
       <main className="flex-1 p-4 md:p-6 overflow-y-auto">
         {/* Time Display */}
         <div className="text-right text-xs md:text-sm text-gray-400 font-mono">
-          6/13/2025 | {currentTime}
+          6/23/2025 | {currentTime}
         </div>
 
         {/* Hero Section */}
@@ -159,80 +177,110 @@ export default function TailwindDemo() {
                       a 20 20 0 0 1 0 -40"
                   />
                 </svg>
-                <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
-                  {apiKeys.TankLevel_cm|| 0.0}
-                  <br />
-                  <br />
-                  <span className="text-xs font-normal">Capacity</span>
-                </div>
-              </div>
-              <div className="mt-4 text-sm text-gray-300">
-                Min Level: 15% | Max Level: 95%
+
+               {(() => {
+  const level = parseInt(apiKeys.TankLevel_cm) || 0;
+  const threshold = 150;
+
+
+  let warningMessage = '';
+
+  if (level > threshold) {
+    warningMessage = `⚠️ Warning: Tank level is high (${level} cm)`;
+    console.warn(warningMessage);
+  }
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-2xl font-bold text-white">
+      {level}
+      <br />
+      <span className="text-xs font-normal">Capacity</span>
+      {warningMessage && (
+        <div className="mt-4 text-yellow-400 text-sm font-medium animate-pulse">
+          {warningMessage}
+        </div>
+      )}
+    </div>
+  );
+})()}
+
               </div>
             </div>
           </div>
+
 
           {/* Flow Rate */}
-          <div className="bg-[#112240] p-6 rounded-xl shadow-md h-[400px]">
-            <div className="flex items-center justify-between mb-2">
-              <div className="font-semibold text-blue-300">Flow Rate</div>
-              <span className="bg-yellow-600 text-sm px-2 py-1 rounded-full">
-                Warning
-              </span>
-            </div>
-            <div className="text-4xl font-bold">
-              {apiKeys.FlowRate_L_per_min || 0} <span className="text-sm">L/min</span>
-            </div>
-            <div className="text-sm text-yellow-300">
-              {apiKeys.FlowRate_L_per_min || 0}
-            </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart
-                data={flowData}
-                margin={{ top: 10, right: 10, bottom: 0, left: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={12} />
-                <YAxis stroke="#94a3b8" fontSize={12} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#facc15"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+  <div className="bg-[#112240] p-6 rounded-xl shadow-md h-[400px] flex flex-col">
+    {/* Top Section: Title and Warning */}
+    <div className="flex items-center justify-between w-full mb-4">
+      <div className="flex items-center gap-2 text-blue-300 text-lg font-semibold">
+        <Droplet className="w-5 h-5 text-blue-400" />
+        Flow Rate
+      </div>
+      <span className="bg-yellow-600 text-sm px-2 py-1 rounded-full">Warning</span>
+    </div>
+
+    {/* Centered Flow Value */}
+    <div className="flex flex-col flex-1 justify-center items-center gap-2">
+      <TrendingUp className="w-8 h-8 text-green-400 mb-1" />
+      <div className="text-6xl font-extrabold text-white">
+        {flowRate}
+        <span className="text-xl font-semibold ml-1">L/min</span>
+      </div>
+      <TrendingDown className="w-5 h-5 text-red-400 mt-1" />
+      <div className="text-lg text-yellow-300 font-medium">
+        {flowRate}
+      </div>
+
+      {/* Conditional Warning */}
+      {flowRate > threshold && (
+        <div className="mt-3 text-red-500 font-medium text-sm animate-pulse">
+          ⚠️ Warning: Flow rate is high!
+        </div>
+      )}
+    </div>
+  </div>
+
+
 
           {/* Dosing Volume */}
-          <div className="bg-[#112240] p-6 rounded-xl shadow-md h-[400px]">
-            <div className="font-semibold text-blue-300 mb-2">Dosing Volume</div>
-            <div className="text-4xl font-bold">
-              {apiKeys.TotalVolume_L || 0}
-              <span className="text-sm">mL</span>
-            </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart
-                data={volumeData}
-                margin={{ top: 10, right: 10, bottom: 0, left: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={12} />
-                <YAxis stroke="#94a3b8" fontSize={12} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+
+  <div className="bg-[#112240] p-6 rounded-xl shadow-md h-[400px] flex flex-col">
+    {/* Title */}
+    <div className="flex items-center justify-between w-full mb-4">
+      <div className="flex items-center gap-2 text-blue-300 text-lg font-semibold">
+        <Syringe className="w-5 h-5 text-blue-400" />
+        Dosing Volume
+      </div>
+      <span className="bg-yellow-600 text-sm px-2 py-1 rounded-full">Monitoring</span>
+    </div>
+
+    {/* Centered Volume Value */}
+    <div className="flex flex-col flex-1 justify-center items-center gap-2">
+      <div className="text-6xl font-extrabold text-white">
+        {(apiKeys.TotalVolume_L) || 0}
+        <span className="text-xl font-semibold ml-1">L</span>
+      </div>
+      <div className="text-lg text-yellow-300 font-medium">
+        {(apiKeys.TotalVolume_L) || 0} mL
+      </div>
+
+      {/* Conditional Warning */}
+      {(apiKeys.TotalVolume_L) > threshold && (
+        <div className="mt-3 flex items-center gap-2 text-red-500 font-medium text-sm animate-pulse">
+          <AlertCircle className="w-4 h-4" />
+          ⚠️ Warning: Dosing volume too high!
         </div>
+      )}
+    </div>
+  </div>
+
+        </div> 
+
+
+
+
+
 
         {/* Alerts Section */}
         <div
