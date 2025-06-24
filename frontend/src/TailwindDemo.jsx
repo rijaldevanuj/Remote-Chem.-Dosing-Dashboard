@@ -69,7 +69,7 @@ export default function TailwindDemo() {
   // and apiKeys.TankLevel_cm is a string that can be parsed to an integer
   // Adjust the parsing logic based on your actual API response structure
   const flowRate = parseFloat(apiKeys.FlowRate_L_per_min) || 0;
-  const threshold = 50;
+  const threshold = 50.0;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#0d0f1c] text-white">
@@ -179,8 +179,8 @@ export default function TailwindDemo() {
                 </svg>
 
                {(() => {
-  const level = parseInt(apiKeys.TankLevel_cm) || 0;
-  const threshold = 150;
+  const level = parseFloat(apiKeys.TankLevel_cm) || 0;
+  const threshold = 150.0;
 
 
   let warningMessage = '';
