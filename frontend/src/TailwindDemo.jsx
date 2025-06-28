@@ -1,15 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Droplet, TrendingUp, TrendingDown } from "lucide-react";
 import { Syringe, AlertCircle } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { Link } from "react-router-dom";
 
 export default function TailwindDemo() {
@@ -35,7 +26,7 @@ export default function TailwindDemo() {
  useEffect(() => {
   const fetchApiKeys = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/latest");
+      const response = await fetch("https://remote-chem-dosing-dashboard-10.onrender.com/api/latest");
       const data = await response.json(); // ✅ FIXED HERE
 
       if (data) {
@@ -146,6 +137,7 @@ export default function TailwindDemo() {
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+  
           {/* Tank Level */}
           <div className="bg-[#112240] p-6 rounded-xl shadow-md relative h-[400px]">
             <div className="flex items-center justify-between mb-4">
@@ -225,7 +217,7 @@ export default function TailwindDemo() {
       <TrendingUp className="w-8 h-8 text-green-400 mb-1" />
       <div className="text-6xl font-extrabold text-white">
         {flowRate}
-        <span className="text-xl font-semibold ml-1">L/min</span>
+        <span className="text-xl font-semibold ml-1"> L/min</span>
       </div>
       <TrendingDown className="w-5 h-5 text-red-400 mt-1" />
       <div className="text-lg text-yellow-300 font-medium">
@@ -276,10 +268,6 @@ export default function TailwindDemo() {
   </div>
 
         </div> 
-
-
-
-
 
 
         {/* Alerts Section */}
@@ -466,7 +454,4 @@ export default function TailwindDemo() {
     </div>
   );
 }
-
-
-
 
